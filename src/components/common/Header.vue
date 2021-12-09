@@ -63,4 +63,8 @@ export default {
 .header__hamburger-btn {
   color: #ffffff;
 }
+
+.header__logo-link.router-link-exact-active {
+  text-decoration: none;
+}
 </style>

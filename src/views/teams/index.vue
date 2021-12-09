@@ -10,8 +10,13 @@
       <Loader v-if="loading === true" />
       <template v-else>
         <h1>Teams</h1>
-        <ul class="country__items" v-if="teams">
-          <li class="country__item" v-for="item in teams" :key="item.id">
+        <SearchComponent :items="teams" @showFiltered="showFiltered" />
+        <ul class="country__items" v-if="filteredTeams">
+          <li
+            class="country__item"
+            v-for="item in filteredTeams"
+            :key="item.id"
+          >
             <b-card>
               <router-link :to="`/teams/${item.id}`">
                 <b-card-text class="country__item-wrapper">
@@ -27,6 +32,9 @@
             </b-card>
           </li>
         </ul>
+        <b-alert variant="secondary" v-else>
+          Not found.
+        </b-alert>
       </template>
     </div>
   </section>
@@ -35,16 +43,22 @@
 <script>
 import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
+import SearchComponent from "@/components/common/SearchComponent.vue";
 export default {
   name: "Teams",
-  components: { Loader, Breadcrumbs },
+  components: { Loader, Breadcrumbs, SearchComponent },
   data() {
     return {
       teams: "",
+      filteredTeams: "",
       loading: null,
     };
   },
-  methods: {},
+  methods: {
+    showFiltered(payload) {
+      this.filteredTeams = payload;
+    },
+  },
   async mounted() {
     this.loading = true;
     try {
@@ -52,6 +66,7 @@ export default {
         "https://api.football-data.org/v2/teams"
       );
       this.teams = response.data.teams;
+      this.filteredTeams = response.data.teams;
     } catch (error) {
       console.log(error);
     }

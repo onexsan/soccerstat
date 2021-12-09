@@ -10,13 +10,14 @@
       <Loader v-if="loading === true" />
       <template v-else>
         <h1>Competitions</h1>
+        <SearchComponent :items="competitions" @showFiltered="showFiltered" />
         <b-alert show variant="warning" v-if="error"
           >Please try again later.</b-alert
         >
-        <ul class="competitions__list" v-if="competitions">
+        <ul class="competitions__list" v-if="filteredCompetitions">
           <li
             class="competitions__item"
-            v-for="item in competitions.filter((el) => el.plan === 'TIER_ONE')"
+            v-for="item in filteredCompetitions"
             :key="item.id"
           >
             <b-card>
@@ -37,6 +38,7 @@
             </b-card>
           </li>
         </ul>
+        <b-alert variant="secondary" v-else> Not found. </b-alert>
       </template>
     </div>
   </section>
@@ -45,14 +47,21 @@
 <script>
 import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
+import SearchComponent from "@/components/common/SearchComponent.vue";
 export default {
-  components: { Loader, Breadcrumbs },
+  components: { Loader, Breadcrumbs, SearchComponent },
   data() {
     return {
       competitions: "",
+      filteredCompetitions: "",
       error: "",
       loading: null,
     };
+  },
+  methods: {
+    showFiltered(payload) {
+      this.filteredCompetitions = payload;
+    },
   },
   async mounted() {
     this.loading = true;
@@ -60,7 +69,12 @@ export default {
       let response = await this.axios.get(
         "https://api.football-data.org/v2/competitions/"
       );
-      this.competitions = response.data.competitions;
+      this.competitions = response.data.competitions.filter(
+        (el) => el.plan === "TIER_ONE"
+      );
+      this.filteredCompetitions = response.data.competitions.filter(
+        (el) => el.plan === "TIER_ONE"
+      );
     } catch (error) {
       console.log(error);
       this.error = error;

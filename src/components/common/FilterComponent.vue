@@ -54,7 +54,7 @@ export default {
 .filters-block {
   margin-bottom: 20px;
   padding: 20px 10px;
-  background-color: #e0dede;
+  background-color: #f3f3f7;
   border-radius: 5px;
 }
 
