@@ -14,7 +14,10 @@
         <b-alert show variant="warning" v-if="error"
           >Please try again later.</b-alert
         >
-        <ul class="competitions__list" v-if="filteredCompetitions">
+        <ul
+          class="competitions__list"
+          v-if="filteredCompetitions && filteredCompetitions.length > 0"
+        >
           <li
             class="competitions__item"
             v-for="item in filteredCompetitions"
@@ -38,7 +41,7 @@
             </b-card>
           </li>
         </ul>
-        <b-alert variant="secondary" v-else> Not found. </b-alert>
+        <p v-else>Not found.</p>
       </template>
     </div>
   </section>
@@ -72,9 +75,16 @@ export default {
       this.competitions = response.data.competitions.filter(
         (el) => el.plan === "TIER_ONE"
       );
-      this.filteredCompetitions = response.data.competitions.filter(
-        (el) => el.plan === "TIER_ONE"
-      );
+      if (
+        this.$route.query &&
+        Object.getPrototypeOf(JSON.parse(JSON.stringify(this.$route.query))) ===
+          Object.prototype &&
+        Object.keys(JSON.parse(JSON.stringify(this.$route.query))).length === 0
+      ) {
+        this.filteredCompetitions = response.data.competitions.filter(
+          (el) => el.plan === "TIER_ONE"
+        );
+      }
     } catch (error) {
       console.log(error);
       this.error = error;

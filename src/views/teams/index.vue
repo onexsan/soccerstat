@@ -11,7 +11,10 @@
       <template v-else>
         <h1>Teams</h1>
         <SearchComponent :items="teams" @showFiltered="showFiltered" />
-        <ul class="country__items" v-if="filteredTeams">
+        <ul
+          class="country__items"
+          v-if="filteredTeams && filteredTeams.length > 0"
+        >
           <li
             class="country__item"
             v-for="item in filteredTeams"
@@ -32,9 +35,7 @@
             </b-card>
           </li>
         </ul>
-        <b-alert variant="secondary" v-else>
-          Not found.
-        </b-alert>
+        <p v-else>Not found.</p>
       </template>
     </div>
   </section>
@@ -66,6 +67,14 @@ export default {
         "https://api.football-data.org/v2/teams"
       );
       this.teams = response.data.teams;
+      if (
+        this.$route.query &&
+        Object.getPrototypeOf(JSON.parse(JSON.stringify(this.$route.query))) ===
+          Object.prototype &&
+        Object.keys(JSON.parse(JSON.stringify(this.$route.query))).length === 0
+      ) {
+        this.filteredTeams = response.data.teams;
+      }
       this.filteredTeams = response.data.teams;
     } catch (error) {
       console.log(error);
