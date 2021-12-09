@@ -119,6 +119,15 @@ export default {
           break;
 
         default:
+          try {
+            let team = await this.axios.get(
+              `https://api.football-data.org/v2/teams/${this.$route.params.id}`
+            );
+            this.team = team.data;
+          } catch (err) {
+            console.log(err);
+            this.errorMessage = true;
+          }
           this.filter.from = dateFrom === undefined ? "" : dateFrom;
           this.filter.to = dateTo === undefined ? "" : dateTo;
           break;
