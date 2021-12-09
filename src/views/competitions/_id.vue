@@ -29,6 +29,9 @@
           <MatchItem v-for="item in matches" :key="item.id" :item="item" />
         </ul>
         <p v-else>Not found.</p>
+        <b-alert variant="danger" v-if="errorMessage === true">
+          Please try again later.
+        </b-alert>
       </template>
     </div>
   </section>
@@ -50,6 +53,7 @@ export default {
         from: "",
         to: "",
       },
+      errorMessage: ''
     };
   },
   async mounted() {
@@ -62,7 +66,7 @@ export default {
       this.competition = response.data.competition;
     } catch (error) {
       console.log(error);
-      this.response = "ERROR";
+      this.errorMessage = true;
     }
     this.loading = false;
   },
@@ -76,18 +80,22 @@ export default {
       this.filter = val;
     },
     updateQuery() {
-      let queries = JSON.parse(JSON.stringify(this.$route.query));
-      queries.dateFrom = this.filter.from;
-      queries.dateTo = this.filter.to;
-      this.$router.replace({ query: queries });
+      try {
+        let queries = JSON.parse(JSON.stringify(this.$route.query));
+        queries.dateFrom = this.filter.from;
+        queries.dateTo = this.filter.to;
+        this.$router.replace({ query: queries });
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
   watch: {
     fromAndTo: async function (val) {
       let [from, to] = val.split("|");
       if (from !== "" && to !== "") {
-        this.loading = true;
-        let params = {
+        try {
+          let params = {
           dateFrom: from,
           dateTo: to,
         };
@@ -99,7 +107,11 @@ export default {
         );
         this.matches = response.data.matches;
         this.updateQuery();
-        this.loading = false;
+        } catch(err) {
+          console.log(err)
+          this.errorMessage = true;
+        }
+        
       }
     },
   },
