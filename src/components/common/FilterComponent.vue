@@ -19,6 +19,7 @@
 
 <script>
 export default {
+  props: ["datesFromQuery"],
   data() {
     return {
       filter: {
@@ -31,6 +32,11 @@ export default {
     fromAndTo() {
       return `${this.filter.from}|${this.filter.to}`;
     },
+  },
+  mounted() {
+    if (this.datesFromQuery !== undefined) {
+      this.filter = this.datesFromQuery;
+    }
   },
   watch: {
     fromAndTo: function (val) {

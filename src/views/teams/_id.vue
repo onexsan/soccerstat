@@ -26,7 +26,10 @@
             <a href="">More</a>
           </b-card-text>
         </b-card>
-        <FilterComponent @changeFilter="changeFilter" />
+        <FilterComponent
+          @changeFilter="changeFilter"
+          :datesFromQuery="filter"
+        />
         <h3>Matches</h3>
         <ul class="match__list" v-if="matches && matches.length > 0">
           <MatchItem
@@ -65,21 +68,7 @@ export default {
     };
   },
   async mounted() {
-    this.loading = true;
-    try {
-      let team = await this.axios.get(
-        `https://api.football-data.org/v2/teams/${this.$route.params.id}`
-      );
-      let response = await this.axios.get(
-        `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`
-      );
-      this.team = team.data;
-      this.matches = response.data.matches;
-    } catch (error) {
-      console.log(error);
-      this.errorMessage = true;
-    }
-    this.loading = false;
+    await this.getMatches();
   },
   computed: {
     fromAndTo() {
@@ -100,6 +89,43 @@ export default {
         console.log(err);
       }
     },
+    async getMatches() {
+      this.loading = true;
+      let params = null;
+      if (
+        this.$route.query &&
+        Object.getPrototypeOf(JSON.parse(JSON.stringify(this.$route.query))) ===
+          Object.prototype &&
+        Object.keys(JSON.parse(JSON.stringify(this.$route.query))).length > 0
+      ) {
+        params = JSON.parse(JSON.stringify(this.$route.query));
+      }
+      let { dateFrom, dateTo } = JSON.parse(JSON.stringify(this.$route.query));
+      switch (params) {
+        case null:
+          try {
+            let team = await this.axios.get(
+              `https://api.football-data.org/v2/teams/${this.$route.params.id}`
+            );
+            let response = await this.axios.get(
+              `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`
+            );
+            this.team = team.data;
+            this.matches = response.data.matches;
+          } catch (error) {
+            console.log(error);
+            this.errorMessage = true;
+          }
+          break;
+
+        default:
+          this.filter.from = dateFrom === undefined ? "" : dateFrom;
+          this.filter.to = dateTo === undefined ? "" : dateTo;
+          break;
+      }
+
+      this.loading = false;
+    },
   },
   watch: {
     fromAndTo: async function (val) {
@@ -116,6 +142,7 @@ export default {
               params: params,
             }
           );
+
           this.matches = response.data.matches;
           this.updateQuery();
         } catch (err) {
