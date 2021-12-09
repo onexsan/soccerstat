@@ -1,28 +1,30 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="wrapper" id="app">
+    <div class="maincontent">
+      <Header />
+      <div class="content">
+        <transition>
+          <router-view></router-view>
+        </transition>
+        <ErrorModal/>
+      </div>
+    </div>
+    <Footer />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import "@/assets/css/main.min.css";
+import Header from "@/components/common/Header.vue";
+import Footer from "@/components/common/Footer.vue";
+import ErrorModal from "@/components/modals/ErrorModal.vue";
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    Header,
+    Footer,
+    ErrorModal,
+  },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
