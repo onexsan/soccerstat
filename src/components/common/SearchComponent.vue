@@ -48,7 +48,12 @@ export default {
         } else {
           delete queries.search;
         }
-        this.$router.replace({ query: queries });
+        this.$router
+          .push({
+            path: `/${this.$route.path.replace(/\\|\//g, "")}/`,
+            query: { search: queries.search },
+          })
+          .catch(() => {});
       } catch (err) {
         console.log(err);
       }
