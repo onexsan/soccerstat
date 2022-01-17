@@ -51,14 +51,4 @@ export default {
 </script>
 
 <style>
-.filters-block {
-  margin-bottom: 20px;
-  padding: 20px 10px;
-  background-color: #f3f3f7;
-  border-radius: 5px;
-}
-
-.filters-block label {
-  font-weight: bold;
-}
 </style>

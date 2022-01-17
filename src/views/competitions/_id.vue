@@ -13,13 +13,10 @@
       <template v-else>
         <h1 class="title mb-3" v-if="competition">{{ competition.name }}</h1>
         <h3>About</h3>
-        <b-card class="mb-3" v-if="competition">
+        <b-card class="mb-3 about-block" v-if="competition">
           <b-card-text>
-            <p class="about-competition">
-              <span>Competition</span>: {{ competition.name }}
-            </p>
-            <p class="about-competition">
-              <span>Place</span>: {{ competition.area.name }}
+            <p class="about-block__row">
+              <span class="about-block__title">Place</span>: {{ competition.area.name }}
             </p>
           </b-card-text>
         </b-card>
@@ -149,13 +146,5 @@ export default {
 </script>
 
 <style>
-.about-competition span {
-  font-weight: bold;
-}
 
-.matches__list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-}
 </style>

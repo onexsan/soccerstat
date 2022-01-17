@@ -15,20 +15,23 @@
           >Please try again later.</b-alert
         >
         <ul
-          class="competitions__list"
+          class="cards__list"
           v-if="filteredCompetitions && filteredCompetitions.length > 0"
         >
           <li
-            class="competitions__item"
+            class="cards__item"
             v-for="item in filteredCompetitions"
             :key="item.id"
           >
-            <b-card>
-              <b-card-text>
-                <router-link :to="`/competitions/${item.id}`">{{
-                  item.name
-                }}</router-link>
-                <p>
+            <b-card class="card">
+              <router-link
+                class="card__link card__link--vertical"
+                :to="`/competitions/${item.id}`"
+              >
+                <p class="card__title d-block">
+                  {{ item.name }}
+                </p>
+                <p class="card__dates d-block">
                   {{
                     item.currentSeason.startDate.split("-").reverse().join(".")
                   }}
@@ -37,7 +40,7 @@
                     item.currentSeason.endDate.split("-").reverse().join(".")
                   }}
                 </p>
-              </b-card-text>
+              </router-link>
             </b-card>
           </li>
         </ul>
@@ -95,17 +98,4 @@ export default {
 </script>
 
 <style>
-.competitions__list {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  row-gap: 15px;
-}
-
-@media screen and (max-width: 420px) {
-  .competitions__list {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-  }
-}
 </style>

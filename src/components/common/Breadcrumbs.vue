@@ -42,28 +42,5 @@ export default {
 </script>
 
 <style>
-ul.breadcrumbs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 20px;
-}
 
-.breadcrumbs__item,
-.breadcrumbs__divider {
-  margin-right: 5px;
-}
-.breadcrumbs__item:last-child,
-.breadcrumbs__divider:last-child {
-  margin-right: 0px;
-}
-
-.breadcrumbs__divider {
-  font-size: 12px;
-  color: #666666;
-}
-
-.breadcrumbs__item.active .breadcrumbs__link {
-  color: darkgreen;
-}
 </style>

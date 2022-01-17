@@ -11,15 +11,5 @@
   </section>
 </template>
 
-<style scoped>
-.home__route {
-  color: #ffffff;
-  text-decoration: none;
-}
-
-@media screen and (max-width: 480px) {
-  .home__route {
-    font-size: 35px;
-  }
-}
+<style>
 </style>

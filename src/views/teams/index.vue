@@ -12,25 +12,22 @@
         <h1>Teams</h1>
         <SearchComponent :items="teams" @showFiltered="showFiltered" />
         <ul
-          class="country__items"
+          class="cards__list"
           v-if="filteredTeams && filteredTeams.length > 0"
         >
-          <li
-            class="country__item"
-            v-for="item in filteredTeams"
-            :key="item.id"
-          >
-            <b-card>
-              <router-link :to="`/teams/${item.id}`">
-                <b-card-text class="country__item-wrapper">
-                  <img
-                    :src="item.crestUrl"
-                    width="20"
-                    height="15"
-                    class="country-img"
-                  />
-                  <p class="country-name">{{ item.name }}</p>
-                </b-card-text>
+          <li class="cards__item" v-for="item in filteredTeams" :key="item.id">
+            <b-card class="card">
+              <router-link
+                class="card__link"
+                :to="`/teams/${item.id}`"
+              >
+                <img
+                  :src="item.crestUrl"
+                  width="20"
+                  height="15"
+                  class="card__img"
+                />
+                <p class="card__title">{{ item.name }}</p>
               </router-link>
             </b-card>
           </li>
@@ -85,29 +82,4 @@ export default {
 </script>
 
 <style>
-.country__items {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-}
-
-.country-name {
-  margin-bottom: 0;
-}
-.country-img {
-  margin-right: 5px;
-}
-.country__item-wrapper {
-  display: flex;
-  align-items: center;
-}
-
-@media screen and (max-width: 480px) {
-  .country__items {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .country-name {
-    font-size: 12px;
-  }
-}
 </style>

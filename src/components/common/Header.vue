@@ -43,28 +43,5 @@ export default {
 </script>
 
 <style>
-.header__logo:hover .fa-futbol {
-  -webkit-animation: fa-spin 2s infinite linear;
-  -moz-animation: fa-spin 2s infinite linear;
-  -o-animation: fa-spin 2s infinite linear;
-  animation: fa-spin 2s infinite linear;
-}
 
-.header__logo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.header__logo-icon {
-  margin-right: 5px;
-}
-
-.header__hamburger-btn {
-  color: #ffffff;
-}
-
-.header__logo-link.router-link-exact-active {
-  text-decoration: none;
-}
 </style>

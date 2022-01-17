@@ -85,19 +85,4 @@ export default {
 </script>
 
 <style>
-.match__item-body {
-  background-color: #e0dede;
-  flex: 1;
-}
-
-.match__item,
-.match__item-body {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.match__item-footer {
-  flex: 1;
-}
 </style>

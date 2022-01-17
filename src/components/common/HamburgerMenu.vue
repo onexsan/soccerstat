@@ -38,7 +38,4 @@ export default {
 </script>
 
 <style>
-.hamburger-menu__nav {
-	margin-bottom: 0;
-}
 </style>

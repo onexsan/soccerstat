@@ -2,7 +2,7 @@
   <nav class="nav">
     <ul class="nav__list">
       <li class="nav__item">
-        <router-link to="/" class="nav__link" data-content="Home"
+        <router-link to="/" exact class="nav__link" data-content="Home"
           >Home</router-link
         >
       </li>
@@ -24,10 +24,6 @@
 </template>
 
 <style>
-.nav__list {
-	margin-bottom: 0;
-}
-
 .router-link-exact-active {
 	text-decoration: underline;
 }

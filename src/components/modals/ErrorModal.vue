@@ -46,8 +46,4 @@ export default {
 </script>
 
 <style>
-.modal .close {
-  border: none;
-  background: transparent;
-}
 </style>

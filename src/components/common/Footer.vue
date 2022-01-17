@@ -25,9 +25,4 @@
 </template>
 
 <style>
-@media screen and (max-width: 480px) {
-  .footer__credits p {
-    text-align: center;
-  }
-}
 </style>

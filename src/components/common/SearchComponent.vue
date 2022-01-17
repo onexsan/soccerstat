@@ -94,29 +94,5 @@ export default {
 </script>
 
 <style>
-.search-input-wrapper {
-  position: relative;
-}
 
-.search-input-wrapper .search-input-icon {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto 0;
-  right: 10px;
-}
-
-input.search-input {
-  border-radius: 5px 0px 0px 5px;
-}
-input.search-input:focus,
-input.search-input:active {
-  outline: none;
-  box-shadow: none;
-  border: 1px solid green;
-}
-
-.search-btn {
-  border-radius: 0px 5px 5px 0px;
-}
 </style>
