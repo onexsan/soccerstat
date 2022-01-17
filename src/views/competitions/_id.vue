@@ -16,15 +16,16 @@
         <b-card class="mb-3 about-block" v-if="competition">
           <b-card-text>
             <p class="about-block__row">
-              <span class="about-block__title">Place</span>: {{ competition.area.name }}
+              <span class="about-block__title">Place</span>:
+              {{ competition.area.name }}
             </p>
           </b-card-text>
         </b-card>
+        <h3>Matches</h3>
         <FilterComponent
           @changeFilter="changeFilter"
           :datesFromQuery="filter"
         />
-        <h3>Matches</h3>
         <ul class="match__list" v-if="matches && matches.length > 0">
           <MatchItem v-for="item in matches" :key="item.id" :item="item" />
         </ul>
@@ -146,5 +147,4 @@ export default {
 </script>
 
 <style>
-
 </style>

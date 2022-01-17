@@ -14,7 +14,12 @@
         <h1>{{ team.name }}</h1>
         <h3>About</h3>
         <b-card class="mb-3 about-block" v-if="team">
-          <img :src="team.crestUrl" width="100" height="auto" />
+          <img
+            class="about-block__img"
+            :src="team.crestUrl"
+            width="100"
+            height="auto"
+          />
           <div class="about-block__content">
             <p class="about-block__row">
               <span class="about-block__title">Place:</span>
@@ -28,11 +33,11 @@
             </p>
           </div>
         </b-card>
+        <h3>Matches</h3>
         <FilterComponent
           @changeFilter="changeFilter"
           :datesFromQuery="filter"
         />
-        <h3>Matches</h3>
         <ul class="match__list" v-if="matches && matches.length > 0">
           <MatchItem
             v-for="item in matches"
