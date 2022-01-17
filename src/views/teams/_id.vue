@@ -84,7 +84,12 @@ export default {
         let queries = JSON.parse(JSON.stringify(this.$route.query));
         queries.dateFrom = this.filter.from;
         queries.dateTo = this.filter.to;
-        this.$router.replace({ query: queries });
+        this.$router
+          .push({
+            path: `/${this.$route.fullPath.replace(/^\/|\/$/g, "")}/`,
+            query: queries,
+          })
+          .catch(() => {});
       } catch (err) {
         console.log(err);
       }
