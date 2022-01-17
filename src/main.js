@@ -15,7 +15,7 @@ import store from './store'
 
 Vue.use(Vuex)
 Vue.use(VueAxios, axios)
-axios.defaults.headers.common["X-Auth-Token"] = 'd784b11c765a483c9fa9efb7e3a0a71f';
+axios.defaults.headers.common["X-Auth-Token"] = process.env.VUE_APP_TOKEN;
 
 import interceptorsSetup from './interceptors'
 interceptorsSetup()
