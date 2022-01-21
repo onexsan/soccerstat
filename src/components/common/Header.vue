@@ -2,17 +2,17 @@
   <header class="header">
     <div class="container header__container">
       <div class="header__logo">
-        <div class="header__logo-icon">
+        <div class="header__icon">
           <font-awesome-icon size="lg" icon="futbol" />
         </div>
-        <router-link to="/" class="header__logo-link">SoccerStat</router-link>
+        <router-link to="/" class="header__link">SoccerStat</router-link>
       </div>
       <div class="header__nav">
         <Nav />
       </div>
-      <div class="header__hamburger">
+      <div class="header__hamburger header-hamburger">
         <button
-          class="header__hamburger-btn"
+          class="header-hamburger__btn"
           @click.prevent="toggleHamburger()"
         >
           <font-awesome-icon size="lg" icon="bars" />
@@ -41,7 +41,3 @@ export default {
   },
 };
 </script>
-
-<style>
-
-</style>

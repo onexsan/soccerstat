@@ -9,17 +9,16 @@
       />
       <Loader v-if="loading === true" />
       <template v-else>
-        <h1>Competitions</h1>
+        <h1 class="title">Competitions</h1>
+
         <SearchComponent :items="competitions" @showFiltered="showFiltered" />
-        <b-alert show variant="warning" v-if="error"
-          >Please try again later.</b-alert
-        >
+
         <ul
-          class="cards__list"
+          class="block__list"
           v-if="filteredCompetitions && filteredCompetitions.length > 0"
         >
           <li
-            class="cards__item"
+            class="block__item"
             v-for="item in filteredCompetitions"
             :key="item.id"
           >
@@ -28,10 +27,10 @@
                 class="card__link card__link--vertical"
                 :to="`/competitions/${item.id}`"
               >
-                <p class="card__title d-block">
+                <p class="card__title">
                   {{ item.name }}
                 </p>
-                <p class="card__dates d-block">
+                <p class="card__dates">
                   {{
                     item.currentSeason.startDate.split("-").reverse().join(".")
                   }}
@@ -44,7 +43,12 @@
             </b-card>
           </li>
         </ul>
+
         <p v-else>Not found.</p>
+
+        <b-alert show variant="warning" v-if="error"
+          >Please try again later.</b-alert
+        >
       </template>
     </div>
   </section>
@@ -91,11 +95,9 @@ export default {
     } catch (error) {
       console.log(error);
       this.error = error;
+    } finally {
+      this.loading = false;
     }
-    this.loading = false;
   },
 };
 </script>
-
-<style>
-</style>

@@ -9,18 +9,17 @@
       />
       <Loader v-if="loading === true" />
       <template v-else>
-        <h1>Teams</h1>
+        <h1 class="title">Teams</h1>
+
         <SearchComponent :items="teams" @showFiltered="showFiltered" />
+
         <ul
-          class="cards__list"
+          class="block__list"
           v-if="filteredTeams && filteredTeams.length > 0"
         >
-          <li class="cards__item" v-for="item in filteredTeams" :key="item.id">
+          <li class="block__item" v-for="item in filteredTeams" :key="item.id">
             <b-card class="card">
-              <router-link
-                class="card__link"
-                :to="`/teams/${item.id}`"
-              >
+              <router-link class="card__link" :to="`/teams/${item.id}`">
                 <img
                   :src="item.crestUrl"
                   width="20"
@@ -32,7 +31,12 @@
             </b-card>
           </li>
         </ul>
+
         <p v-else>Not found.</p>
+
+        <b-alert show variant="warning" v-if="error"
+          >Please try again later.</b-alert
+        >
       </template>
     </div>
   </section>
@@ -50,6 +54,7 @@ export default {
       teams: "",
       filteredTeams: "",
       loading: null,
+      error: "",
     };
   },
   methods: {
@@ -75,11 +80,10 @@ export default {
       this.filteredTeams = response.data.teams;
     } catch (error) {
       console.log(error);
+      this.error = error;
+    } finally {
+      this.loading = false;
     }
-    this.loading = false;
   },
 };
 </script>
-
-<style>
-</style>

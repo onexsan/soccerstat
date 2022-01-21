@@ -11,9 +11,11 @@
       />
       <Loader v-if="loading === true" />
       <template v-else>
-        <h1>{{ team.name }}</h1>
+        <h1 class="title">{{ team.name }}</h1>
+
         <h3>About</h3>
-        <b-card class="mb-3 about-block" v-if="team">
+
+        <b-card class="about-block" v-if="team">
           <img
             class="about-block__img"
             :src="team.crestUrl"
@@ -33,20 +35,16 @@
             </p>
           </div>
         </b-card>
+
         <h3>Matches</h3>
+
         <FilterComponent
           @changeFilter="changeFilter"
           :datesFromQuery="filter"
         />
-        <ul class="match__list" v-if="matches && matches.length > 0">
-          <MatchItem
-            v-for="item in matches"
-            :key="item.id"
-            :item="item"
-            :team="team"
-          />
-        </ul>
-        <p v-else>Not found.</p>
+
+        <MatchList :matches="matches" :team="team" />
+
         <b-alert variant="danger" v-if="errorMessage === true">
           Please try again later.
         </b-alert>
@@ -59,9 +57,9 @@
 import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
 import FilterComponent from "@/components/common/FilterComponent.vue";
-import MatchItem from "@/components/common/MatchItem.vue";
+import MatchList from "@/components/common/MatchList.vue";
 export default {
-  components: { Loader, MatchItem, Breadcrumbs, FilterComponent },
+  components: { Loader, MatchList, Breadcrumbs, FilterComponent },
   data() {
     return {
       loading: null,
@@ -176,5 +174,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -1,6 +1,6 @@
 <template>
   <li
-    class="match__item"
+    class="match-item"
     :class="{
       draw: areWeWinning === 'draw',
       win: areWeWinning === true,
@@ -8,63 +8,12 @@
       scheduled: item.status === 'SCHEDULED',
     }"
   >
-    <!-- <div class="match__item-header">
-      <div class="match__item-team">
-        <p>{{ item.homeTeam.name }}</p>
-        <p>Home team</p>
-      </div>
-      <div class="match__item-score">
-        <template v-if="item.status === 'FINISHED'">
-          <span>{{ item.score.fullTime.homeTeam }}</span>
-          <span>-</span>
-          <span>{{ item.score.fullTime.awayTeam }}</span>
-        </template>
-        <template v-else>
-          <span>VS</span>
-        </template>
-      </div>
-      <div class="match__item-team">
-        <p>{{ item.awayTeam.name }}</p>
-        <p>Away team</p>
-      </div>
-    </div>
-    <div class="match__item-body">
-      <div class="match__item-winner">
-        {{
-          item.score.winner === "DRAW"
-            ? "Draw"
-            : item.score.winner === "HOME_TEAM"
-            ? item.homeTeam.name
-            : item.score.winner === "AWAY_TEAM"
-            ? item.awayTeam.name
-            : "SCHEDULED"
-        }}
-      </div>
-      <div class="match__item-footer">
-        <div class="match__item-date">
-          <p>Date</p>
-          <p>{{ item.utcDate.slice(0, 10).split("-").reverse().join(".") }}</p>
-        </div>
-        <div class="match__item-season">
-          <p>Season</p>
-          <p>
-            <span>{{
-              item.season.startDate.split("-").reverse().join(".")
-            }}</span>
-            <span>&nbsp;-&nbsp;</span>
-            <span>{{
-              item.season.endDate.split("-").reverse().join(".")
-            }}</span>
-          </p>
-        </div>
-      </div>
-    </div> -->
-    <div class="match__item-header">
-      <div class="match__item-date">
+    <div class="match-item__header">
+      <div class="match-item__date">
         <span>Date</span>
         {{ item.utcDate.slice(0, 10).split("-").reverse().join(".") }}
       </div>
-      <div class="match__item-winner" v-if="item.score.winner">
+      <div class="match-item__winner" v-if="item.score.winner">
         <span>Winner</span>
         {{
           item.score.winner === "DRAW"
@@ -76,16 +25,16 @@
             : ""
         }}
       </div>
-      <div class="match__item-winner" v-else>
-        <span>{{item.status}}</span>
+      <div class="match-item__winner" v-else>
+        <span>{{ item.status }}</span>
       </div>
     </div>
-    <div class="match__item-body">
-      <div class="match__item-team">
-        <p class="match__item-team-name">{{ item.homeTeam.name }}</p>
-        <p class="match__item-team-type">Home team</p>
+    <div class="match-item__body">
+      <div class="match-item__team">
+        <p class="match-item__team-name">{{ item.homeTeam.name }}</p>
+        <p class="match-item__team-type">Home team</p>
       </div>
-      <div class="match__item-score">
+      <div class="match-item__score">
         <template v-if="item.status === 'FINISHED'">
           <span>{{ item.score.fullTime.homeTeam }}</span>
           <span>:</span>
@@ -95,9 +44,9 @@
           <span>VS</span>
         </template>
       </div>
-      <div class="match__item-team">
-        <p class="match__item-team-name">{{ item.awayTeam.name }}</p>
-        <p class="match__item-team-type">Away team</p>
+      <div class="match-item__team">
+        <p class="match-item__team-name">{{ item.awayTeam.name }}</p>
+        <p class="match-item__team-type">Away team</p>
       </div>
     </div>
   </li>
@@ -124,6 +73,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>

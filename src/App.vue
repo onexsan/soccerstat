@@ -2,12 +2,12 @@
   <div class="wrapper" id="app">
     <div class="maincontent">
       <Header />
-      <div class="content">
+      <main class="content">
         <transition>
           <router-view></router-view>
         </transition>
-        <ErrorModal/>
-      </div>
+        <ErrorModal />
+      </main>
     </div>
     <Footer />
   </div>
@@ -27,4 +27,3 @@ export default {
   },
 };
 </script>
-

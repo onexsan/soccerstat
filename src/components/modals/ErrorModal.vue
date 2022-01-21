@@ -1,25 +1,31 @@
 <template>
   <b-modal
     id="modal-error"
+    class="modal modal-error"
     title="Error"
-    header-bg-variant="danger"
+    header-bg-variant="dark"
     header-text-variant="light"
     v-model="showErrorModal"
   >
-    <p class="my-4">
-      A network error occurred. This could be a CORS issue or a dropped internet
-      connection. Please try to reload the page or go to the main page.
+    <p class="modal__desc">
+      A network error occurred. This could be caused by too many requests, a
+      CORS issue or a dropped internet connection. Please try to reload the page
+      or go to the main page.
     </p>
     <template #modal-footer>
-      <div class="w-100">
+      <div class="modal__footer">
         <b-row>
-          <b-col class="d-flex justify-content-center">
-            <b-button class="w-100" variant="dark" @click="reload()">
+          <b-col>
+            <b-button class="modal__btn" variant="success" @click="reload()">
               Reload
             </b-button>
           </b-col>
-          <b-col class="d-flex justify-content-center">
-            <b-button class="w-100" variant="secondary" @click="goToMain()">
+          <b-col>
+            <b-button
+              class="modal__btn"
+              variant="secondary"
+              @click="goToMain()"
+            >
               To the main page
             </b-button>
           </b-col>
@@ -45,5 +51,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

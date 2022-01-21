@@ -25,6 +25,6 @@
 
 <style>
 .router-link-exact-active {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 </style>

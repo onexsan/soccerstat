@@ -1,16 +1,19 @@
 <template>
   <div class="filters-block">
-    <b-form @submit.prevent="submitFiltered">
+    <b-form @submit.prevent="submitFiltered" class="search-component">
       <b-form-group>
-        <b-input-group class="search-input-wrapper">
+        <b-input-group>
           <b-form-input
-            class="search-input"
+            class="search-component__input"
             type="search"
             v-model="searchText"
             placeholder="Search for a name..."
           ></b-form-input>
           <b-input-group-append>
-            <b-button class="search-btn" type="submit" variant="success"
+            <b-button
+              class="search-component__btn"
+              type="submit"
+              variant="success"
               >Search</b-button
             >
           </b-input-group-append>
@@ -93,6 +96,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -1,7 +1,7 @@
 <template>
   <div class="filters-block">
     <b-form>
-      <b-row class="my-1">
+      <b-row class="filter-component__row">
         <b-col>
           <b-form-group label="From" label-for="from">
             <b-form-input type="date" id="from" v-model="filter.from" />
@@ -50,5 +50,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

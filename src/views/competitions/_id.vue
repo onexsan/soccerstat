@@ -11,9 +11,11 @@
       />
       <Loader v-if="loading === true" />
       <template v-else>
-        <h1 class="title mb-3" v-if="competition">{{ competition.name }}</h1>
+        <h1 class="title" v-if="competition">{{ competition.name }}</h1>
+
         <h3>About</h3>
-        <b-card class="mb-3 about-block" v-if="competition">
+
+        <b-card class="about-block" v-if="competition">
           <b-card-text>
             <p class="about-block__row">
               <span class="about-block__title">Place</span>:
@@ -21,15 +23,16 @@
             </p>
           </b-card-text>
         </b-card>
+
         <h3>Matches</h3>
+
         <FilterComponent
           @changeFilter="changeFilter"
           :datesFromQuery="filter"
         />
-        <ul class="match__list" v-if="matches && matches.length > 0">
-          <MatchItem v-for="item in matches" :key="item.id" :item="item" />
-        </ul>
-        <p v-else>Not found.</p>
+
+        <MatchList :matches="matches" />
+
         <b-alert variant="danger" v-if="errorMessage === true">
           Please try again later.
         </b-alert>
@@ -41,10 +44,10 @@
 <script>
 import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
-import MatchItem from "@/components/common/MatchItem.vue";
+import MatchList from "@/components/common/MatchList.vue";
 import FilterComponent from "@/components/common/FilterComponent.vue";
 export default {
-  components: { Loader, MatchItem, Breadcrumbs, FilterComponent },
+  components: { Loader, MatchList, Breadcrumbs, FilterComponent },
   data() {
     return {
       competition: "",
@@ -111,6 +114,16 @@ export default {
           }
           break;
         default:
+          try {
+            let response = await this.axios.get(
+              `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
+            );
+            this.matches = response.data.matches;
+            this.competition = response.data.competition;
+          } catch (error) {
+            console.log(error);
+            this.errorMessage = true;
+          }
           this.filter.from = dateFrom === undefined ? "" : dateFrom;
           this.filter.to = dateTo === undefined ? "" : dateTo;
           break;
@@ -146,5 +159,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
