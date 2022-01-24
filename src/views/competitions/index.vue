@@ -16,7 +16,41 @@
             subscription.
           </p>
           <SearchComponent :items="competitions" @showFiltered="showFiltered" />
-          <CompetitionsList :blocks="filteredCompetitions" />
+          <ul
+            class="block__list"
+            v-if="filteredCompetitions && filteredCompetitions.length > 0"
+          >
+            <li
+              class="block__item"
+              v-for="item in filteredCompetitions"
+              :key="item.id"
+            >
+              <b-card class="card">
+                <router-link
+                  class="card__link card__link--vertical"
+                  :to="`/competitions/${item.id}`"
+                >
+                  <p class="card__title">
+                    {{ item.name }}
+                  </p>
+                  <p class="card__dates">
+                    {{
+                      item.currentSeason.startDate
+                        .split("-")
+                        .reverse()
+                        .join(".")
+                    }}
+                    -
+                    {{
+                      item.currentSeason.endDate.split("-").reverse().join(".")
+                    }}
+                  </p>
+                </router-link>
+              </b-card>
+            </li>
+          </ul>
+
+          <b-alert show variant="warning" v-else>Not found.</b-alert>
         </section>
       </template>
     </div>
@@ -27,13 +61,12 @@
 import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
 import SearchComponent from "@/components/common/SearchComponent.vue";
-import CompetitionsList from "@/components/common/CompetitionsList.vue";
 export default {
-  components: { Loader, Breadcrumbs, SearchComponent, CompetitionsList },
+  components: { Loader, Breadcrumbs, SearchComponent },
   data() {
     return {
-      competitions: "",
-      filteredCompetitions: "",
+      competitions: [],
+      filteredCompetitions: [],
       loading: null,
     };
   },

@@ -24,26 +24,6 @@
         </b-card>
       </div>
     </VueSlickCarousel>
-    <VueSlickCarousel
-      v-else
-      class="carousel__block"
-      v-bind="carouselSettings"
-      ref="carousel"
-    >
-      <div class="block__item" v-for="item in teams" :key="item.id">
-        <b-card class="card">
-          <router-link class="card__link" :to="`/teams/${item.id}`">
-            <img
-              :src="item.crestUrl"
-              width="20"
-              height="15"
-              class="card__img"
-            />
-            <p class="card__title">{{ item.name }}</p>
-          </router-link>
-        </b-card>
-      </div>
-    </VueSlickCarousel>
 
     <div class="carousel__buttons">
       <button class="btn" @click="showPrev">&lt;</button>
@@ -62,14 +42,6 @@ export default {
   props: ["teams", "competitionPage"],
   data() {
     return {
-      carouselSettings: {
-        responsive: [
-          {
-            breakpoint: 1800,
-            settings: "unslick",
-          },
-        ],
-      },
       competitionCarouselSettings: {
         dots: false,
         arrows: false,

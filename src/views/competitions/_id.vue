@@ -28,7 +28,7 @@
         <template v-if="teams && teams.length > 0">
           <section class="section">
             <h3>Teams</h3>
-            <TeamsList :teams="teams" :competitionPage="true" />
+            <TeamsSlider :teams="teams" :competitionPage="true" />
           </section>
         </template>
 
@@ -54,9 +54,9 @@ import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
 import MatchList from "@/components/common/MatchList.vue";
 import FilterComponent from "@/components/common/FilterComponent.vue";
-import TeamsList from "@/components/common/TeamsList.vue";
+import TeamsSlider from "@/components/common/TeamsSlider.vue";
 export default {
-  components: { Loader, MatchList, Breadcrumbs, FilterComponent, TeamsList },
+  components: { Loader, MatchList, Breadcrumbs, FilterComponent, TeamsSlider },
   data() {
     return {
       competition: "",
