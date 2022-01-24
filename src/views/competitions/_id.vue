@@ -13,25 +13,33 @@
       <template v-else>
         <h1 class="title" v-if="competition">{{ competition.name }}</h1>
 
-        <h3>About</h3>
+        <section class="section">
+          <h3>About</h3>
+          <b-card class="about-block" v-if="competition">
+            <b-card-text>
+              <p class="about-block__row">
+                <span class="about-block__title">Place</span>:
+                {{ competition.area.name }}
+              </p>
+            </b-card-text>
+          </b-card>
+        </section>
 
-        <b-card class="about-block" v-if="competition">
-          <b-card-text>
-            <p class="about-block__row">
-              <span class="about-block__title">Place</span>:
-              {{ competition.area.name }}
-            </p>
-          </b-card-text>
-        </b-card>
+        <template v-if="teams && teams.length > 0">
+          <section class="section">
+            <h3>Teams</h3>
+            <TeamsList :teams="teams" :competitionPage="true" />
+          </section>
+        </template>
 
-        <h3>Matches</h3>
-
-        <FilterComponent
-          @changeFilter="changeFilter"
-          :datesFromQuery="filter"
-        />
-
-        <MatchList :matches="matches" />
+        <section class="section">
+          <h3>Matches</h3>
+          <FilterComponent
+            @changeFilter="changeFilter"
+            :datesFromQuery="filter"
+          />
+          <MatchList :matches="matches" />
+        </section>
 
         <b-alert variant="danger" v-if="errorMessage === true">
           Please try again later.
@@ -46,12 +54,14 @@ import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
 import MatchList from "@/components/common/MatchList.vue";
 import FilterComponent from "@/components/common/FilterComponent.vue";
+import TeamsList from "@/components/common/TeamsList.vue";
 export default {
-  components: { Loader, MatchList, Breadcrumbs, FilterComponent },
+  components: { Loader, MatchList, Breadcrumbs, FilterComponent, TeamsList },
   data() {
     return {
       competition: "",
       matches: [],
+      teams: [],
       loading: null,
       filter: {
         from: "",
@@ -62,6 +72,7 @@ export default {
   },
   async mounted() {
     await this.getMatches();
+    await this.getTeams();
   },
   computed: {
     fromAndTo() {
@@ -130,6 +141,20 @@ export default {
       }
 
       this.loading = false;
+    },
+    async getTeams() {
+      this.loading = true;
+      try {
+        let response = await this.axios.get(
+          `https://api.football-data.org/v2/competitions/${this.$route.params.id}/teams`
+        );
+        this.teams = response.data.teams;
+      } catch (error) {
+        console.log(error);
+        this.errorMessage = true;
+      } finally {
+        this.loading = false;
+      }
     },
   },
   watch: {

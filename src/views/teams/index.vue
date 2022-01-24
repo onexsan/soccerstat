@@ -9,34 +9,14 @@
       />
       <Loader v-if="loading === true" />
       <template v-else>
-        <h1 class="title">Teams</h1>
-
-        <SearchComponent :items="teams" @showFiltered="showFiltered" />
-
-        <ul
-          class="block__list"
-          v-if="filteredTeams && filteredTeams.length > 0"
-        >
-          <li class="block__item" v-for="item in filteredTeams" :key="item.id">
-            <b-card class="card">
-              <router-link class="card__link" :to="`/teams/${item.id}`">
-                <img
-                  :src="item.crestUrl"
-                  width="20"
-                  height="15"
-                  class="card__img"
-                />
-                <p class="card__title">{{ item.name }}</p>
-              </router-link>
-            </b-card>
-          </li>
-        </ul>
-
-        <p v-else>Not found.</p>
-
-        <b-alert show variant="warning" v-if="error"
-          >Please try again later.</b-alert
-        >
+        <section class="section">
+          <h1 class="title">Teams</h1>
+          <p class="note">
+            * The number of teams is limited due to the free plan subscription.
+          </p>
+          <SearchComponent :items="teams" @showFiltered="showFiltered" />
+          <TeamsList :teams="filteredTeams" />
+        </section>
       </template>
     </div>
   </section>
@@ -46,15 +26,15 @@
 import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
 import SearchComponent from "@/components/common/SearchComponent.vue";
+import TeamsList from "@/components/common/TeamsList.vue";
 export default {
   name: "Teams",
-  components: { Loader, Breadcrumbs, SearchComponent },
+  components: { Loader, Breadcrumbs, SearchComponent, TeamsList },
   data() {
     return {
       teams: "",
       filteredTeams: "",
       loading: null,
-      error: "",
     };
   },
   methods: {
@@ -80,7 +60,6 @@ export default {
       this.filteredTeams = response.data.teams;
     } catch (error) {
       console.log(error);
-      this.error = error;
     } finally {
       this.loading = false;
     }

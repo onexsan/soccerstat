@@ -13,39 +13,47 @@
       <template v-else>
         <h1 class="title">{{ team.name }}</h1>
 
-        <h3>About</h3>
+        <section class="section">
+          <h3>About</h3>
+          <b-card class="about-block about-block--team" v-if="team">
+            <img
+              class="about-block__img"
+              :src="team.crestUrl"
+              width="100"
+              height="auto"
+            />
+            <div class="about-block__content">
+              <p class="about-block__row">
+                <span class="about-block__title">Place:</span>
+                {{ team.area.name }}
+              </p>
+              <p class="about-block__row">
+                <span class="about-block__title">Website: </span>
+                <a
+                  class="d-inline-block"
+                  target="_blank"
+                  :href="team.website"
+                  >{{ team.website }}</a
+                >
+              </p>
+            </div>
+          </b-card>
+        </section>
 
-        <b-card class="about-block" v-if="team">
-          <img
-            class="about-block__img"
-            :src="team.crestUrl"
-            width="100"
-            height="auto"
+        <section class="section" v-if="!permissionDenied">
+          <h3>Matches</h3>
+          <FilterComponent
+            @changeFilter="changeFilter"
+            :datesFromQuery="filter"
           />
-          <div class="about-block__content">
-            <p class="about-block__row">
-              <span class="about-block__title">Place:</span>
-              {{ team.area.name }}
-            </p>
-            <p class="about-block__row">
-              <span class="about-block__title">Website: </span>
-              <a class="d-inline-block" target="_blank" :href="team.website">{{
-                team.website
-              }}</a>
-            </p>
-          </div>
-        </b-card>
+          <MatchList :matches="matches" :team="team" />
+        </section>
 
-        <h3>Matches</h3>
+        <b-alert show variant="danger" v-if="permissionDenied === true">
+          This data can't be accessed due to the free plan subscription.
+        </b-alert>
 
-        <FilterComponent
-          @changeFilter="changeFilter"
-          :datesFromQuery="filter"
-        />
-
-        <MatchList :matches="matches" :team="team" />
-
-        <b-alert variant="danger" v-if="errorMessage === true">
+        <b-alert show variant="danger" v-if="errorMessage === true">
           Please try again later.
         </b-alert>
       </template>
@@ -70,6 +78,7 @@ export default {
         to: "",
       },
       errorMessage: "",
+      permissionDenied: false,
     };
   },
   async mounted() {

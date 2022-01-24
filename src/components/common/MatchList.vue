@@ -7,7 +7,9 @@
       :team="team"
     />
   </ul>
-  <p v-else>Not found.</p>
+  <b-alert show variant="warning" v-else
+    >Not found. Please select another date.</b-alert
+  >
 </template>
 
 <script>

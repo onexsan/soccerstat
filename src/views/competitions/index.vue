@@ -9,46 +9,15 @@
       />
       <Loader v-if="loading === true" />
       <template v-else>
-        <h1 class="title">Competitions</h1>
-
-        <SearchComponent :items="competitions" @showFiltered="showFiltered" />
-
-        <ul
-          class="block__list"
-          v-if="filteredCompetitions && filteredCompetitions.length > 0"
-        >
-          <li
-            class="block__item"
-            v-for="item in filteredCompetitions"
-            :key="item.id"
-          >
-            <b-card class="card">
-              <router-link
-                class="card__link card__link--vertical"
-                :to="`/competitions/${item.id}`"
-              >
-                <p class="card__title">
-                  {{ item.name }}
-                </p>
-                <p class="card__dates">
-                  {{
-                    item.currentSeason.startDate.split("-").reverse().join(".")
-                  }}
-                  -
-                  {{
-                    item.currentSeason.endDate.split("-").reverse().join(".")
-                  }}
-                </p>
-              </router-link>
-            </b-card>
-          </li>
-        </ul>
-
-        <p v-else>Not found.</p>
-
-        <b-alert show variant="warning" v-if="error"
-          >Please try again later.</b-alert
-        >
+        <section class="section">
+          <h1 class="title">Competitions</h1>
+          <p class="note">
+            * The number of competitions is limited due to the free plan
+            subscription.
+          </p>
+          <SearchComponent :items="competitions" @showFiltered="showFiltered" />
+          <CompetitionsList :blocks="filteredCompetitions" />
+        </section>
       </template>
     </div>
   </section>
@@ -58,13 +27,13 @@
 import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
 import SearchComponent from "@/components/common/SearchComponent.vue";
+import CompetitionsList from "@/components/common/CompetitionsList.vue";
 export default {
-  components: { Loader, Breadcrumbs, SearchComponent },
+  components: { Loader, Breadcrumbs, SearchComponent, CompetitionsList },
   data() {
     return {
       competitions: "",
       filteredCompetitions: "",
-      error: "",
       loading: null,
     };
   },
@@ -94,7 +63,6 @@ export default {
       }
     } catch (error) {
       console.log(error);
-      this.error = error;
     } finally {
       this.loading = false;
     }
