@@ -49,7 +49,6 @@
               </b-card>
             </li>
           </ul>
-
           <b-alert show variant="warning" v-else>Not found.</b-alert>
         </section>
       </template>
@@ -79,20 +78,21 @@ export default {
     this.loading = true;
     try {
       let response = await this.axios.get(
-        "https://api.football-data.org/v2/competitions/"
+        "https://api.football-data.org/v2/competitions/",
+        {
+          params: {
+            plan: "TIER_ONE",
+          },
+        }
       );
-      this.competitions = response.data.competitions.filter(
-        (el) => el.plan === "TIER_ONE"
-      );
+      this.competitions = response.data.competitions;
       if (
         this.$route.query &&
         Object.getPrototypeOf(JSON.parse(JSON.stringify(this.$route.query))) ===
           Object.prototype &&
         Object.keys(JSON.parse(JSON.stringify(this.$route.query))).length === 0
       ) {
-        this.filteredCompetitions = response.data.competitions.filter(
-          (el) => el.plan === "TIER_ONE"
-        );
+        this.filteredCompetitions = response.data.competitions;
       }
     } catch (error) {
       console.log(error);

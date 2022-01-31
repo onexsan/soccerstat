@@ -11,6 +11,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faFutbol } from "@fortawesome/free-solid-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import Pagination from "vue-pagination-2";
 import store from "./store";
 
 Vue.use(Vuex);
@@ -25,6 +26,8 @@ Vue.use(IconsPlugin);
 
 library.add(faFutbol, faBars);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
+
+Vue.component("pagination", Pagination);
 
 Vue.config.productionTip = false;
 
