@@ -56,6 +56,7 @@ import MatchList from "@/components/common/MatchList.vue";
 import FilterComponent from "@/components/common/FilterComponent.vue";
 import TeamsSlider from "@/components/common/TeamsSlider.vue";
 export default {
+  name: "CompetitionPage",
   components: { Loader, MatchList, Breadcrumbs, FilterComponent, TeamsSlider },
   data() {
     return {
@@ -82,21 +83,6 @@ export default {
   methods: {
     changeFilter(val) {
       this.filter = val;
-    },
-    updateQuery() {
-      try {
-        let queries = JSON.parse(JSON.stringify(this.$route.query));
-        queries.dateFrom = this.filter.from;
-        queries.dateTo = this.filter.to;
-        this.$router
-          .push({
-            path: `/${this.$route.fullPath.replace(/^\/|\/$/g, "")}/`,
-            query: queries,
-          })
-          .catch(() => {});
-      } catch (err) {
-        console.log(err);
-      }
     },
     async getMatches() {
       this.loading = true;
@@ -173,7 +159,16 @@ export default {
             }
           );
           this.matches = response.data.matches;
-          this.updateQuery();
+        } catch (err) {
+          console.log(err);
+          this.errorMessage = true;
+        }
+      } else if (from == "" && to == "") {
+        try {
+          let response = await this.axios.get(
+            `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
+          );
+          this.matches = response.data.matches;
         } catch (err) {
           console.log(err);
           this.errorMessage = true;

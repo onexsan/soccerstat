@@ -61,6 +61,7 @@ import Loader from "@/components/common/Loader.vue";
 import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
 import SearchComponent from "@/components/common/SearchComponent.vue";
 export default {
+  name: "Competitions",
   components: { Loader, Breadcrumbs, SearchComponent },
   data() {
     return {

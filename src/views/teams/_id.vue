@@ -67,6 +67,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs.vue";
 import FilterComponent from "@/components/common/FilterComponent.vue";
 import MatchList from "@/components/common/MatchList.vue";
 export default {
+  name: "TeamPage",
   components: { Loader, MatchList, Breadcrumbs, FilterComponent },
   data() {
     return {
@@ -76,6 +77,7 @@ export default {
       filter: {
         from: "",
         to: "",
+        // status: null,
       },
       errorMessage: "",
       permissionDenied: false,
@@ -93,21 +95,7 @@ export default {
     changeFilter(val) {
       this.filter = val;
     },
-    updateQuery() {
-      try {
-        let queries = JSON.parse(JSON.stringify(this.$route.query));
-        queries.dateFrom = this.filter.from;
-        queries.dateTo = this.filter.to;
-        this.$router
-          .push({
-            path: `/${this.$route.fullPath.replace(/^\/|\/$/g, "")}/`,
-            query: queries,
-          })
-          .catch(() => {});
-      } catch (err) {
-        console.log(err);
-      }
-    },
+
     async getMatches() {
       this.loading = true;
       let params = null;
@@ -126,10 +114,11 @@ export default {
             let team = await this.axios.get(
               `https://api.football-data.org/v2/teams/${this.$route.params.id}`
             );
+            this.team = team.data;
+
             let response = await this.axios.get(
               `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`
             );
-            this.team = team.data;
             this.matches = response.data.matches;
           } catch (error) {
             console.log(error);
@@ -143,6 +132,11 @@ export default {
               `https://api.football-data.org/v2/teams/${this.$route.params.id}`
             );
             this.team = team.data;
+
+            let response = await this.axios.get(
+              `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`
+            );
+            this.matches = response.data.matches;
           } catch (err) {
             console.log(err);
             this.errorMessage = true;
@@ -172,7 +166,16 @@ export default {
           );
 
           this.matches = response.data.matches;
-          this.updateQuery();
+        } catch (err) {
+          console.log(err);
+          this.errorMessage = true;
+        }
+      } else if (from == "" && to == "") {
+        try {
+          let response = await this.axios.get(
+            `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`
+          );
+          this.matches = response.data.matches;
         } catch (err) {
           console.log(err);
           this.errorMessage = true;
@@ -182,5 +185,3 @@ export default {
   },
 };
 </script>
-
-<style></style>
