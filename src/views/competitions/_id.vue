@@ -67,6 +67,7 @@ export default {
       filter: {
         from: "",
         to: "",
+        status: "",
       },
       errorMessage: "",
     };
@@ -76,8 +77,8 @@ export default {
     await this.getTeams();
   },
   computed: {
-    fromAndTo() {
-      return `${this.filter.from}|${this.filter.to}`;
+    filters() {
+      return `${this.filter.from}|${this.filter.to}|${this.filter.status}`;
     },
   },
   methods: {
@@ -95,7 +96,9 @@ export default {
       ) {
         params = JSON.parse(JSON.stringify(this.$route.query));
       }
-      let { dateFrom, dateTo } = JSON.parse(JSON.stringify(this.$route.query));
+      let { dateFrom, dateTo, status } = JSON.parse(
+        JSON.stringify(this.$route.query)
+      );
 
       switch (params) {
         case null:
@@ -123,6 +126,8 @@ export default {
           }
           this.filter.from = dateFrom === undefined ? "" : dateFrom;
           this.filter.to = dateTo === undefined ? "" : dateTo;
+          this.filter.status =
+            status === undefined ? "" : status.replace(/^\/|\/$/g, "");
           break;
       }
 
@@ -144,14 +149,17 @@ export default {
     },
   },
   watch: {
-    fromAndTo: async function (val) {
-      let [from, to] = val.split("|");
+    filters: async function (val) {
+      let [from, to, status] = val.split("|");
       if (from !== "" && to !== "") {
         try {
           let params = {
             dateFrom: from,
             dateTo: to,
           };
+          if (status !== "" && status !== undefined) {
+            params.status = status.toUpperCase();
+          }
           let response = await this.axios.get(
             `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`,
             {
@@ -164,9 +172,16 @@ export default {
           this.errorMessage = true;
         }
       } else if (from == "" && to == "") {
+        let params = {};
+        if (status !== "" && status !== undefined) {
+          params.status = status.toUpperCase();
+        }
         try {
           let response = await this.axios.get(
-            `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
+            `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`,
+            {
+              params: params,
+            }
           );
           this.matches = response.data.matches;
         } catch (err) {

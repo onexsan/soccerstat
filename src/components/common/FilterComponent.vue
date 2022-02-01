@@ -13,12 +13,12 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <!-- <b-row class="filter-component__row">
+      <b-row class="filter-component__row">
         <b-col>
           <b-form-group label="Status" label-for="status">
             <div class="form-group__wrapper">
               <select class="custom-input" id="status" v-model="filter.status">
-                <option :value="null" disabled>Select a status</option>
+                <option :value="''" disabled>Select a status</option>
                 <option
                   :value="status"
                   v-for="status in statuses"
@@ -28,15 +28,15 @@
                 </option>
               </select>
               <b-button
-                v-if="filter.status !== null"
+                v-if="filter.status !== ''"
                 variant="danger"
-                @click.prevent="filter.status = null"
+                @click.prevent="filter.status = ''"
                 >Remove</b-button
               >
             </div>
           </b-form-group>
         </b-col>
-        <b-col v-if="isCompetitionsPage">
+        <!-- <b-col v-if="isCompetitionsPage">
           <b-form-group label="Season" label-for="year">
             <select class="custom-input" id="year" v-model="year">
               <option :value="null" disabled>Select a year</option>
@@ -45,8 +45,8 @@
               </option>
             </select>
           </b-form-group>
-        </b-col>
-      </b-row> -->
+        </b-col> -->
+      </b-row>
     </b-form>
   </div>
 </template>
@@ -59,23 +59,23 @@ export default {
       filter: {
         from: "",
         to: "",
-        // status: null,
+        status: "",
       },
-      // year: null,
-      // statuses: [
-      //   "Scheduled",
-      //   "Live",
-      //   "Paused",
-      //   "Finished",
-      //   "Postponed",
-      //   "Suspended",
-      //   "Canceled",
-      // ],
+      year: null,
+      statuses: [
+        "Scheduled",
+        "Live",
+        "Paused",
+        "Finished",
+        "Postponed",
+        "Suspended",
+        "Canceled",
+      ],
     };
   },
   computed: {
-    fromAndTo() {
-      return `${this.filter.from}|${this.filter.to}`;
+    filters() {
+      return `${this.filter.from}|${this.filter.to}|${this.filter.status}`;
     },
     years() {
       var currentYear = new Date().getFullYear();
@@ -96,36 +96,49 @@ export default {
     updateQuery() {
       try {
         let queries = JSON.parse(JSON.stringify(this.$route.query));
-        // if (this.filter.status !== null && this.filter.status !== "null") {
-        //   this.$router
-        //     .push({
-        //       path: `/${this.$route.fullPath.replace(/^\/|\/$/g, "")}/`,
-        //       query: { status: this.filter.status },
-        //     })
-        //     .catch(() => {});
-        // } else if (
-        //   this.filter.status === null ||
-        //   this.filter.status == "null"
-        // ) {
-        //   let query = Object.assign({}, this.$route.query);
-        //   delete query.status;
-        //   this.$router.replace({ query }).catch(() => {});
-        // }
+        if (this.filter.status != "" && this.filter.status !== undefined) {
+          this.$router
+            .push({
+              path: `/${this.$route.fullPath.replace(/^\/|\/$/g, "")}/`,
+              query: { status: this.filter.status },
+            })
+            .catch(() => {});
+        } else if (
+          this.filter.status == "" ||
+          this.filter.status == undefined
+        ) {
+          let query = Object.assign({}, this.$route.query);
+          delete query.status;
+          this.$router.push({ query }).catch(() => {});
+        }
 
         if (this.filter.from != "" && this.filter.to != "") {
           queries.dateFrom = this.filter.from;
           queries.dateTo = this.filter.to;
+          if (this.filter.status == "" || this.filter.status == undefined) {
+            delete queries.status;
+          } else {
+            queries.status = this.filter.status;
+          }
           this.$router
             .push({
               path: `/${this.$route.fullPath.replace(/^\/|\/$/g, "")}/`,
               query: queries,
             })
             .catch(() => {});
-        } else {
+        } else if (this.filter.from == "" || this.filter.to == "") {
           let query = Object.assign({}, this.$route.query);
+
           delete query.dateFrom;
           delete query.dateTo;
-          this.$router.replace({ query }).catch(() => {});
+
+          if (this.filter.status == "" || this.filter.status == undefined) {
+            delete queries.status;
+          } else {
+            queries.status = this.filter.status;
+          }
+
+          this.$router.push({ query }).catch(() => {});
         }
       } catch (err) {
         console.log(err);
@@ -138,11 +151,12 @@ export default {
     }
   },
   watch: {
-    fromAndTo: function (val) {
-      let [from, to] = val.split("|");
+    filters: function (val) {
+      let [from, to, status] = val.split("|");
       this.$emit("changeFilter", {
         from,
         to: to !== "|" ? to : "",
+        status: status !== "|" ? status : "",
       });
       this.updateQuery();
     },
