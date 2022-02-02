@@ -36,16 +36,24 @@
             </div>
           </b-form-group>
         </b-col>
-        <!-- <b-col v-if="isCompetitionsPage">
+        <b-col v-if="isCompetitionsPage">
           <b-form-group label="Season" label-for="year">
-            <select class="custom-input" id="year" v-model="year">
-              <option :value="null" disabled>Select a year</option>
-              <option :value="year" v-for="year in years" :key="year.id">
-                {{ year }}
-              </option>
-            </select>
+            <div class="form-group__wrapper">
+              <select class="custom-input" id="year" v-model="filter.year">
+                <option :value="''" disabled>Select a year</option>
+                <option :value="year" v-for="year in years" :key="year.id">
+                  {{ year }}
+                </option>
+              </select>
+              <b-button
+                v-if="filter.year !== ''"
+                variant="danger"
+                @click.prevent="filter.year = ''"
+                >Remove</b-button
+              >
+            </div>
           </b-form-group>
-        </b-col> -->
+        </b-col>
       </b-row>
     </b-form>
   </div>
@@ -60,28 +68,28 @@ export default {
         from: "",
         to: "",
         status: "",
+        year: "",
       },
-      year: null,
       statuses: [
-        "Scheduled",
-        "Live",
-        "Paused",
-        "Finished",
-        "Postponed",
-        "Suspended",
-        "Canceled",
+        "scheduled",
+        "live",
+        "paused",
+        "finished",
+        "postponed",
+        "suspended",
+        "canceled",
       ],
     };
   },
   computed: {
     filters() {
-      return `${this.filter.from}|${this.filter.to}|${this.filter.status}`;
+      return `${this.filter.from}|${this.filter.to}|${this.filter.status}|${this.filter.year}`;
     },
     years() {
       var currentYear = new Date().getFullYear();
       var years = [];
-      for (var i = 1980; i <= currentYear; i++) {
-        years.push(i);
+      for (var i = 2020; i <= currentYear; i++) {
+        years.push(i.toString());
       }
       return years.reverse();
     },
@@ -100,7 +108,7 @@ export default {
           this.$router
             .push({
               path: `/${this.$route.fullPath.replace(/^\/|\/$/g, "")}/`,
-              query: { status: this.filter.status },
+              query: { status: this.filter.status.replace(/^\/|\/$/g, "") },
             })
             .catch(() => {});
         } else if (
@@ -109,7 +117,28 @@ export default {
         ) {
           let query = Object.assign({}, this.$route.query);
           delete query.status;
-          this.$router.push({ query }).catch(() => {});
+          this.$router
+            .push({
+              query: query,
+            })
+            .catch(() => {});
+        }
+
+        if (this.filter.year != "" && this.filter.year !== undefined) {
+          this.$router
+            .push({
+              path: `/${this.$route.fullPath.replace(/^\/|\/$/g, "")}/`,
+              query: { season: this.filter.year.replace(/^\/|\/$/g, "") },
+            })
+            .catch(() => {});
+        } else if (this.filter.year == "" || this.filter.year == undefined) {
+          let query = Object.assign({}, this.$route.query);
+          delete query.season;
+          this.$router
+            .push({
+              query: query,
+            })
+            .catch(() => {});
         }
 
         if (this.filter.from != "" && this.filter.to != "") {
@@ -118,7 +147,12 @@ export default {
           if (this.filter.status == "" || this.filter.status == undefined) {
             delete queries.status;
           } else {
-            queries.status = this.filter.status;
+            queries.status = this.filter.status.replace(/^\/|\/$/g, "");
+          }
+          if (this.filter.year == "" || this.filter.year == undefined) {
+            delete queries.season;
+          } else {
+            queries.season = this.filter.year.replace(/^\/|\/$/g, "");
           }
           this.$router
             .push({
@@ -135,10 +169,20 @@ export default {
           if (this.filter.status == "" || this.filter.status == undefined) {
             delete queries.status;
           } else {
-            queries.status = this.filter.status;
+            queries.status = this.filter.status.replace(/^\/|\/$/g, "");
           }
 
-          this.$router.push({ query }).catch(() => {});
+          if (this.filter.year == "" || this.filter.year == undefined) {
+            delete queries.season;
+          } else {
+            queries.season = this.filter.year.replace(/^\/|\/$/g, "");
+          }
+
+          this.$router
+            .push({
+              query: query,
+            })
+            .catch(() => {});
         }
       } catch (err) {
         console.log(err);
@@ -152,11 +196,12 @@ export default {
   },
   watch: {
     filters: function (val) {
-      let [from, to, status] = val.split("|");
+      let [from, to, status, year] = val.split("|");
       this.$emit("changeFilter", {
         from,
         to: to !== "|" ? to : "",
         status: status !== "|" ? status : "",
+        year: year !== "|" ? year : "",
       });
       this.updateQuery();
     },

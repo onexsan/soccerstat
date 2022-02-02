@@ -8,9 +8,10 @@
         :team="team"
       />
     </ul>
-    <b-alert show variant="warning" v-else
-      >Not found. Please select another date.</b-alert
+    <b-alert show variant="warning" v-if="paginatedData.length === 0 && !error"
+      >Not found.</b-alert
     >
+    <b-alert show variant="danger" v-if="error">{{ error }}</b-alert>
     <pagination
       v-if="pageCount > 1"
       :records="matches.length"
@@ -28,7 +29,7 @@
 <script>
 import MatchItem from "@/components/common/MatchItem.vue";
 export default {
-  props: ["matches", "team"],
+  props: ["matches", "team", "error"],
   components: { MatchItem },
   data() {
     return {

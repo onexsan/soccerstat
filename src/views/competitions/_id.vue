@@ -38,12 +38,8 @@
             @changeFilter="changeFilter"
             :datesFromQuery="filter"
           />
-          <MatchList :matches="matches" />
+          <MatchList :matches="matches" :error="error" />
         </section>
-
-        <b-alert variant="danger" v-if="errorMessage === true">
-          Please try again later.
-        </b-alert>
       </template>
     </div>
   </section>
@@ -68,8 +64,9 @@ export default {
         from: "",
         to: "",
         status: "",
+        year: "",
       },
-      errorMessage: "",
+      error: null,
     };
   },
   async mounted() {
@@ -78,7 +75,7 @@ export default {
   },
   computed: {
     filters() {
-      return `${this.filter.from}|${this.filter.to}|${this.filter.status}`;
+      return `${this.filter.from}|${this.filter.to}|${this.filter.status}|${this.filter.year}`;
     },
   },
   methods: {
@@ -96,38 +93,48 @@ export default {
       ) {
         params = JSON.parse(JSON.stringify(this.$route.query));
       }
-      let { dateFrom, dateTo, status } = JSON.parse(
+      let { dateFrom, dateTo, status, season } = JSON.parse(
         JSON.stringify(this.$route.query)
       );
 
       switch (params) {
         case null:
           try {
+            this.error = null;
             let response = await this.axios.get(
               `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
             );
             this.matches = response.data.matches;
             this.competition = response.data.competition;
           } catch (error) {
-            console.log(error);
-            this.errorMessage = true;
+            if (error.response) {
+              this.error = error.response.data.message;
+            }
+            this.matches = [];
           }
           break;
         default:
           try {
+            this.error = null;
             let response = await this.axios.get(
               `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
             );
             this.matches = response.data.matches;
             this.competition = response.data.competition;
           } catch (error) {
-            console.log(error);
-            this.errorMessage = true;
+            if (error.response) {
+              this.error = error.response.data.message;
+            }
+            this.matches = [];
           }
-          this.filter.from = dateFrom === undefined ? "" : dateFrom;
-          this.filter.to = dateTo === undefined ? "" : dateTo;
+          this.filter.from =
+            dateFrom === undefined ? "" : dateFrom.replace(/^\/|\/$/g, "");
+          this.filter.to =
+            dateTo === undefined ? "" : dateTo.replace(/^\/|\/$/g, "");
           this.filter.status =
             status === undefined ? "" : status.replace(/^\/|\/$/g, "");
+          this.filter.year =
+            season === undefined ? "" : season.replace(/^\/|\/$/g, "");
           break;
       }
 
@@ -142,7 +149,6 @@ export default {
         this.teams = response.data.teams;
       } catch (error) {
         console.log(error);
-        this.errorMessage = true;
       } finally {
         this.loading = false;
       }
@@ -150,15 +156,19 @@ export default {
   },
   watch: {
     filters: async function (val) {
-      let [from, to, status] = val.split("|");
+      let [from, to, status, year] = val.split("|");
       if (from !== "" && to !== "") {
         try {
+          this.error = null;
           let params = {
             dateFrom: from,
             dateTo: to,
           };
           if (status !== "" && status !== undefined) {
             params.status = status.toUpperCase();
+          }
+          if (year !== "" && year !== undefined) {
+            params.season = year;
           }
           let response = await this.axios.get(
             `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`,
@@ -167,16 +177,22 @@ export default {
             }
           );
           this.matches = response.data.matches;
-        } catch (err) {
-          console.log(err);
-          this.errorMessage = true;
+        } catch (error) {
+          if (error.response) {
+            this.error = error.response.data.message;
+          }
+          this.matches = [];
         }
       } else if (from == "" && to == "") {
         let params = {};
         if (status !== "" && status !== undefined) {
           params.status = status.toUpperCase();
         }
+        if (year !== "" && year !== undefined) {
+          params.season = year;
+        }
         try {
+          this.error = null;
           let response = await this.axios.get(
             `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`,
             {
@@ -184,9 +200,11 @@ export default {
             }
           );
           this.matches = response.data.matches;
-        } catch (err) {
-          console.log(err);
-          this.errorMessage = true;
+        } catch (error) {
+          if (error.response) {
+            this.error = error.response.data.message;
+          }
+          this.matches = [];
         }
       }
     },

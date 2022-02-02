@@ -46,15 +46,11 @@
             @changeFilter="changeFilter"
             :datesFromQuery="filter"
           />
-          <MatchList :matches="matches" :team="team" />
+          <MatchList :matches="matches" :team="team" :error="error" />
         </section>
 
         <b-alert show variant="danger" v-if="permissionDenied === true">
           This data can't be accessed due to the free plan subscription.
-        </b-alert>
-
-        <b-alert show variant="danger" v-if="errorMessage === true">
-          Please try again later.
         </b-alert>
       </template>
     </div>
@@ -79,7 +75,7 @@ export default {
         to: "",
         status: "",
       },
-      errorMessage: "",
+      error: null,
       permissionDenied: false,
     };
   },
@@ -113,6 +109,7 @@ export default {
       switch (params) {
         case null:
           try {
+            this.error = null;
             let team = await this.axios.get(
               `https://api.football-data.org/v2/teams/${this.$route.params.id}`
             );
@@ -123,13 +120,17 @@ export default {
             );
             this.matches = response.data.matches;
           } catch (error) {
-            console.log(error);
-            this.errorMessage = true;
+            if (error.response) {
+              this.error = error.response.data.message;
+            }
+
+            this.matches = [];
           }
           break;
 
         default:
           try {
+            this.error = null;
             let team = await this.axios.get(
               `https://api.football-data.org/v2/teams/${this.$route.params.id}`
             );
@@ -139,9 +140,12 @@ export default {
               `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`
             );
             this.matches = response.data.matches;
-          } catch (err) {
-            console.log(err);
-            this.errorMessage = true;
+          } catch (error) {
+            if (error.response) {
+              this.error = error.response.data.message;
+            }
+
+            this.matches = [];
           }
           this.filter.from = dateFrom === undefined ? "" : dateFrom;
           this.filter.to = dateTo === undefined ? "" : dateTo;
@@ -159,6 +163,7 @@ export default {
 
       if (from !== "" && to !== "") {
         try {
+          this.error = null;
           let params = {
             dateFrom: from,
             dateTo: to,
@@ -174,9 +179,12 @@ export default {
           );
 
           this.matches = response.data.matches;
-        } catch (err) {
-          console.log(err);
-          this.errorMessage = true;
+        } catch (error) {
+          if (error.response) {
+            this.error = error.response.data.message;
+          }
+
+          this.matches = [];
         }
       } else if (from == "" && to == "") {
         let params = {};
@@ -184,6 +192,7 @@ export default {
           params.status = status.toUpperCase();
         }
         try {
+          this.error = null;
           let response = await this.axios.get(
             `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`,
             {
@@ -191,9 +200,11 @@ export default {
             }
           );
           this.matches = response.data.matches;
-        } catch (err) {
-          console.log(err);
-          this.errorMessage = true;
+        } catch (error) {
+          if (error.response) {
+            this.error = error.response.data.message;
+          }
+          this.matches = [];
         }
       }
     },

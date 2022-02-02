@@ -5,7 +5,7 @@
     title="Error"
     header-bg-variant="dark"
     header-text-variant="light"
-    v-model="showErrorModal"
+    v-model="isShown"
   >
     <p class="modal__desc">
       A network error occurred. This could be caused by too many requests, a
@@ -36,9 +36,18 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+// import { mapState } from "vuex";
 export default {
-  computed: mapState(["showErrorModal"]),
+  computed: {
+    showErrorModal() {
+      return this.$store.state.showErrorModal;
+    },
+  },
+  data() {
+    return {
+      isShown: false,
+    };
+  },
   methods: {
     reload() {
       this.$router.go();
@@ -46,6 +55,11 @@ export default {
     goToMain() {
       this.$store.dispatch("toggleError");
       this.$router.push("/");
+    },
+  },
+  watch: {
+    showErrorModal: function (val) {
+      this.isShown = val;
     },
   },
 };
