@@ -46,7 +46,13 @@
             @changeFilter="changeFilter"
             :datesFromQuery="filter"
           />
-          <MatchList :matches="matches" :team="team" :error="error" />
+          <MatchList
+            v-if="!updatingList"
+            :matches="matches"
+            :team="team"
+            :error="error"
+          />
+          <Loader v-if="updatingList === true" />
         </section>
 
         <b-alert show variant="danger" v-if="permissionDenied === true">
@@ -68,6 +74,7 @@ export default {
   data() {
     return {
       loading: null,
+      updatingList: false,
       matches: [],
       team: "",
       filter: {
@@ -109,6 +116,7 @@ export default {
       switch (params) {
         case null:
           try {
+            this.updatingList = true;
             this.error = null;
             let team = await this.axios.get(
               `https://api.football-data.org/v2/teams/${this.$route.params.id}`
@@ -123,13 +131,15 @@ export default {
             if (error.response) {
               this.error = error.response.data.message;
             }
-
             this.matches = [];
+          } finally {
+            this.updatingList = false;
           }
           break;
 
         default:
           try {
+            this.updatingList = true;
             this.error = null;
             let team = await this.axios.get(
               `https://api.football-data.org/v2/teams/${this.$route.params.id}`
@@ -144,8 +154,9 @@ export default {
             if (error.response) {
               this.error = error.response.data.message;
             }
-
             this.matches = [];
+          } finally {
+            this.updatingList = false;
           }
           this.filter.from = dateFrom === undefined ? "" : dateFrom;
           this.filter.to = dateTo === undefined ? "" : dateTo;
@@ -163,6 +174,7 @@ export default {
 
       if (from !== "" && to !== "") {
         try {
+          this.updatingList = true;
           this.error = null;
           let params = {
             dateFrom: from,
@@ -183,8 +195,9 @@ export default {
           if (error.response) {
             this.error = error.response.data.message;
           }
-
           this.matches = [];
+        } finally {
+          this.updatingList = false;
         }
       } else if (from == "" && to == "") {
         let params = {};
@@ -192,6 +205,7 @@ export default {
           params.status = status.toUpperCase();
         }
         try {
+          this.updatingList = true;
           this.error = null;
           let response = await this.axios.get(
             `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`,
@@ -205,6 +219,8 @@ export default {
             this.error = error.response.data.message;
           }
           this.matches = [];
+        } finally {
+          this.updatingList = false;
         }
       }
     },

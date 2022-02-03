@@ -38,7 +38,8 @@
             @changeFilter="changeFilter"
             :datesFromQuery="filter"
           />
-          <MatchList :matches="matches" :error="error" />
+          <MatchList v-if="!updatingList" :matches="matches" :error="error" />
+          <Loader v-if="updatingList === true" />
         </section>
       </template>
     </div>
@@ -60,6 +61,7 @@ export default {
       matches: [],
       teams: [],
       loading: null,
+      updatingList: false,
       filter: {
         from: "",
         to: "",
@@ -100,6 +102,7 @@ export default {
       switch (params) {
         case null:
           try {
+            this.updatingList = true;
             this.error = null;
             let response = await this.axios.get(
               `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
@@ -111,10 +114,13 @@ export default {
               this.error = error.response.data.message;
             }
             this.matches = [];
+          } finally {
+            this.updatingList = false;
           }
           break;
         default:
           try {
+            this.updatingList = true;
             this.error = null;
             let response = await this.axios.get(
               `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
@@ -126,6 +132,8 @@ export default {
               this.error = error.response.data.message;
             }
             this.matches = [];
+          } finally {
+            this.updatingList = false;
           }
           this.filter.from =
             dateFrom === undefined ? "" : dateFrom.replace(/^\/|\/$/g, "");
@@ -159,6 +167,7 @@ export default {
       let [from, to, status, year] = val.split("|");
       if (from !== "" && to !== "") {
         try {
+          this.updatingList = true;
           this.error = null;
           let params = {
             dateFrom: from,
@@ -182,6 +191,8 @@ export default {
             this.error = error.response.data.message;
           }
           this.matches = [];
+        } finally {
+          this.updatingList = false;
         }
       } else if (from == "" && to == "") {
         let params = {};
@@ -192,6 +203,7 @@ export default {
           params.season = year;
         }
         try {
+          this.updatingList = true;
           this.error = null;
           let response = await this.axios.get(
             `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`,
@@ -205,6 +217,8 @@ export default {
             this.error = error.response.data.message;
           }
           this.matches = [];
+        } finally {
+          this.updatingList = false;
         }
       }
     },
