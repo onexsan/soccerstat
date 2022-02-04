@@ -63,28 +63,22 @@ export default {
     showFiltered(payload) {
       this.filteredTeams = payload;
     },
+    async getTeams() {
+      this.loading = true;
+      try {
+        let response = await this.axios.get(
+          "https://api.football-data.org/v2/teams"
+        );
+        this.teams = response.data.teams;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
   async mounted() {
-    this.loading = true;
-    try {
-      let response = await this.axios.get(
-        "https://api.football-data.org/v2/teams"
-      );
-      this.teams = response.data.teams;
-      if (
-        this.$route.query &&
-        Object.getPrototypeOf(JSON.parse(JSON.stringify(this.$route.query))) ===
-          Object.prototype &&
-        Object.keys(JSON.parse(JSON.stringify(this.$route.query))).length === 0
-      ) {
-        this.filteredTeams = response.data.teams;
-      }
-      this.filteredTeams = response.data.teams;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.loading = false;
-    }
+    await this.getTeams();
   },
 };
 </script>

@@ -74,32 +74,27 @@ export default {
     showFiltered(payload) {
       this.filteredCompetitions = payload;
     },
+    async getCompetitions() {
+      this.loading = true;
+      try {
+        let response = await this.axios.get(
+          "https://api.football-data.org/v2/competitions/",
+          {
+            params: {
+              plan: "TIER_ONE",
+            },
+          }
+        );
+        this.competitions = response.data.competitions;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
   async mounted() {
-    this.loading = true;
-    try {
-      let response = await this.axios.get(
-        "https://api.football-data.org/v2/competitions/",
-        {
-          params: {
-            plan: "TIER_ONE",
-          },
-        }
-      );
-      this.competitions = response.data.competitions;
-      if (
-        this.$route.query &&
-        Object.getPrototypeOf(JSON.parse(JSON.stringify(this.$route.query))) ===
-          Object.prototype &&
-        Object.keys(JSON.parse(JSON.stringify(this.$route.query))).length === 0
-      ) {
-        this.filteredCompetitions = response.data.competitions;
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.loading = false;
-    }
+    await this.getCompetitions();
   },
 };
 </script>

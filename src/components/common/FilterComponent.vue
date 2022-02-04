@@ -31,7 +31,7 @@
                 v-show="filter.status !== null"
                 variant="danger"
                 @click.prevent="filter.status = null"
-                >Remove</b-button
+                >Cancel</b-button
               >
             </div>
           </b-form-group>
@@ -49,7 +49,7 @@
                 v-show="filter.season !== null"
                 variant="danger"
                 @click.prevent="filter.season = null"
-                >Remove</b-button
+                >Cancel</b-button
               >
             </div>
           </b-form-group>

@@ -8,14 +8,14 @@
       </li>
       <li class="nav__item">
         <router-link
-          to="/competitions"
+          to="/competitions/"
           class="nav__link"
           data-content="Competitions"
           >Competitions</router-link
         >
       </li>
       <li class="nav__item">
-        <router-link to="/teams" class="nav__link" data-content="Teams"
+        <router-link to="/teams/" class="nav__link" data-content="Teams"
           >Teams</router-link
         >
       </li>
