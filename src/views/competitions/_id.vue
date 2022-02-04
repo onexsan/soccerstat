@@ -21,6 +21,10 @@
                 <span class="about-block__title">Place</span>:
                 {{ competition.area.name }}
               </p>
+              <p class="about-block__row">
+                <span class="about-block__title">Code</span>:
+                {{ competition.code }}
+              </p>
             </b-card-text>
           </b-card>
         </section>
@@ -34,12 +38,8 @@
 
         <section class="section">
           <h3>Matches</h3>
-          <FilterComponent
-            @changeFilter="changeFilter"
-            :datesFromQuery="filter"
-          />
-          <MatchList v-if="!updatingList" :matches="matches" :error="error" />
-          <Loader v-if="updatingList === true" />
+          <FilterComponent @updError="updError" @updMatches="updMatches" />
+          <MatchList :matches="matches" :error="error" />
         </section>
       </template>
     </div>
@@ -61,92 +61,18 @@ export default {
       matches: [],
       teams: [],
       loading: null,
-      updatingList: false,
-      filter: {
-        from: "",
-        to: "",
-        status: "",
-        year: "",
-      },
       error: null,
     };
   },
   async mounted() {
-    await this.getMatches();
     await this.getTeams();
   },
-  computed: {
-    filters() {
-      return `${this.filter.from}|${this.filter.to}|${this.filter.status}|${this.filter.year}`;
-    },
-  },
   methods: {
-    changeFilter(val) {
-      this.filter = val;
+    updError(val) {
+      this.error = val;
     },
-    async getMatches() {
-      this.loading = true;
-      let params = null;
-      if (
-        this.$route.query &&
-        Object.getPrototypeOf(JSON.parse(JSON.stringify(this.$route.query))) ===
-          Object.prototype &&
-        Object.keys(JSON.parse(JSON.stringify(this.$route.query))).length > 0
-      ) {
-        params = JSON.parse(JSON.stringify(this.$route.query));
-      }
-      let { dateFrom, dateTo, status, season } = JSON.parse(
-        JSON.stringify(this.$route.query)
-      );
-
-      switch (params) {
-        case null:
-          try {
-            this.updatingList = true;
-            this.error = null;
-            let response = await this.axios.get(
-              `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
-            );
-            this.matches = response.data.matches;
-            this.competition = response.data.competition;
-          } catch (error) {
-            if (error.response) {
-              this.error = error.response.data.message;
-            }
-            this.matches = [];
-          } finally {
-            this.updatingList = false;
-          }
-          break;
-        default:
-          try {
-            this.updatingList = true;
-            this.error = null;
-            let response = await this.axios.get(
-              `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`
-            );
-            this.matches = response.data.matches;
-            this.competition = response.data.competition;
-          } catch (error) {
-            if (error.response) {
-              this.error = error.response.data.message;
-            }
-            this.matches = [];
-          } finally {
-            this.updatingList = false;
-          }
-          this.filter.from =
-            dateFrom === undefined ? "" : dateFrom.replace(/^\/|\/$/g, "");
-          this.filter.to =
-            dateTo === undefined ? "" : dateTo.replace(/^\/|\/$/g, "");
-          this.filter.status =
-            status === undefined ? "" : status.replace(/^\/|\/$/g, "");
-          this.filter.year =
-            season === undefined ? "" : season.replace(/^\/|\/$/g, "");
-          break;
-      }
-
-      this.loading = false;
+    updMatches(val) {
+      this.matches = val;
     },
     async getTeams() {
       this.loading = true;
@@ -155,75 +81,16 @@ export default {
           `https://api.football-data.org/v2/competitions/${this.$route.params.id}/teams`
         );
         this.teams = response.data.teams;
+        this.competition = response.data.competition;
       } catch (error) {
         console.log(error);
+        if (error.response) {
+          this.error = error.response.data.message;
+        }
       } finally {
         this.loading = false;
       }
     },
   },
-  watch: {
-    filters: async function (val) {
-      let [from, to, status, year] = val.split("|");
-      if (from !== "" && to !== "") {
-        try {
-          this.updatingList = true;
-          this.error = null;
-          let params = {
-            dateFrom: from,
-            dateTo: to,
-          };
-          if (status !== "" && status !== undefined) {
-            params.status = status.toUpperCase();
-          }
-          if (year !== "" && year !== undefined) {
-            params.season = year;
-          }
-          let response = await this.axios.get(
-            `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`,
-            {
-              params: params,
-            }
-          );
-          this.matches = response.data.matches;
-        } catch (error) {
-          if (error.response) {
-            this.error = error.response.data.message;
-          }
-          this.matches = [];
-        } finally {
-          this.updatingList = false;
-        }
-      } else if (from == "" && to == "") {
-        let params = {};
-        if (status !== "" && status !== undefined) {
-          params.status = status.toUpperCase();
-        }
-        if (year !== "" && year !== undefined) {
-          params.season = year;
-        }
-        try {
-          this.updatingList = true;
-          this.error = null;
-          let response = await this.axios.get(
-            `https://api.football-data.org/v2/competitions/${this.$route.params.id}/matches`,
-            {
-              params: params,
-            }
-          );
-          this.matches = response.data.matches;
-        } catch (error) {
-          if (error.response) {
-            this.error = error.response.data.message;
-          }
-          this.matches = [];
-        } finally {
-          this.updatingList = false;
-        }
-      }
-    },
-  },
 };
 </script>
-
-<style></style>

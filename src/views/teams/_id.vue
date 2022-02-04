@@ -40,24 +40,11 @@
           </b-card>
         </section>
 
-        <section class="section" v-if="!permissionDenied">
+        <section class="section">
           <h3>Matches</h3>
-          <FilterComponent
-            @changeFilter="changeFilter"
-            :datesFromQuery="filter"
-          />
-          <MatchList
-            v-if="!updatingList"
-            :matches="matches"
-            :team="team"
-            :error="error"
-          />
-          <Loader v-if="updatingList === true" />
+          <FilterComponent @updError="updError" @updMatches="updMatches" />
+          <MatchList :matches="matches" :team="team" :error="error" />
         </section>
-
-        <b-alert show variant="danger" v-if="permissionDenied === true">
-          This data can't be accessed due to the free plan subscription.
-        </b-alert>
       </template>
     </div>
   </section>
@@ -74,154 +61,36 @@ export default {
   data() {
     return {
       loading: null,
-      updatingList: false,
       matches: [],
       team: "",
-      filter: {
-        from: "",
-        to: "",
-        status: "",
-      },
       error: null,
-      permissionDenied: false,
     };
   },
   async mounted() {
-    await this.getMatches();
-  },
-  computed: {
-    filters() {
-      return `${this.filter.from}|${this.filter.to}|${this.filter.status}`;
-    },
+    await this.getTeamDescription();
   },
   methods: {
-    changeFilter(val) {
-      this.filter = val;
+    updError(val) {
+      this.error = val;
     },
-
-    async getMatches() {
+    updMatches(val) {
+      this.matches = val;
+    },
+    async getTeamDescription() {
       this.loading = true;
-      let params = null;
-      if (
-        this.$route.query &&
-        Object.getPrototypeOf(JSON.parse(JSON.stringify(this.$route.query))) ===
-          Object.prototype &&
-        Object.keys(JSON.parse(JSON.stringify(this.$route.query))).length > 0
-      ) {
-        params = JSON.parse(JSON.stringify(this.$route.query));
-      }
-      let { dateFrom, dateTo, status } = JSON.parse(
-        JSON.stringify(this.$route.query)
-      );
-      switch (params) {
-        case null:
-          try {
-            this.updatingList = true;
-            this.error = null;
-            let team = await this.axios.get(
-              `https://api.football-data.org/v2/teams/${this.$route.params.id}`
-            );
-            this.team = team.data;
-
-            let response = await this.axios.get(
-              `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`
-            );
-            this.matches = response.data.matches;
-          } catch (error) {
-            if (error.response) {
-              this.error = error.response.data.message;
-            }
-            this.matches = [];
-          } finally {
-            this.updatingList = false;
-          }
-          break;
-
-        default:
-          try {
-            this.updatingList = true;
-            this.error = null;
-            let team = await this.axios.get(
-              `https://api.football-data.org/v2/teams/${this.$route.params.id}`
-            );
-            this.team = team.data;
-
-            let response = await this.axios.get(
-              `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`
-            );
-            this.matches = response.data.matches;
-          } catch (error) {
-            if (error.response) {
-              this.error = error.response.data.message;
-            }
-            this.matches = [];
-          } finally {
-            this.updatingList = false;
-          }
-          this.filter.from = dateFrom === undefined ? "" : dateFrom;
-          this.filter.to = dateTo === undefined ? "" : dateTo;
-          this.filter.status =
-            status === undefined ? "" : status.replace(/^\/|\/$/g, "");
-          break;
-      }
-
-      this.loading = false;
-    },
-  },
-  watch: {
-    filters: async function (val) {
-      let [from, to, status] = val.split("|");
-
-      if (from !== "" && to !== "") {
-        try {
-          this.updatingList = true;
-          this.error = null;
-          let params = {
-            dateFrom: from,
-            dateTo: to,
-          };
-          if (status !== "" && status !== undefined) {
-            params.status = status.toUpperCase();
-          }
-          let response = await this.axios.get(
-            `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`,
-            {
-              params: params,
-            }
-          );
-
-          this.matches = response.data.matches;
-        } catch (error) {
-          if (error.response) {
-            this.error = error.response.data.message;
-          }
-          this.matches = [];
-        } finally {
-          this.updatingList = false;
+      try {
+        this.error = null;
+        let team = await this.axios.get(
+          `https://api.football-data.org/v2/teams/${this.$route.params.id}`
+        );
+        this.team = team.data;
+      } catch (error) {
+        console.log(error);
+        if (error.response) {
+          this.error = error.response.data.message;
         }
-      } else if (from == "" && to == "") {
-        let params = {};
-        if (status !== "" && status !== undefined) {
-          params.status = status.toUpperCase();
-        }
-        try {
-          this.updatingList = true;
-          this.error = null;
-          let response = await this.axios.get(
-            `https://api.football-data.org/v2/teams/${this.$route.params.id}/matches`,
-            {
-              params: params,
-            }
-          );
-          this.matches = response.data.matches;
-        } catch (error) {
-          if (error.response) {
-            this.error = error.response.data.message;
-          }
-          this.matches = [];
-        } finally {
-          this.updatingList = false;
-        }
+      } finally {
+        this.loading = false;
       }
     },
   },
