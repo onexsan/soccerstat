@@ -27,7 +27,7 @@
             <b-button
               class="search-component__cancel"
               variant="danger"
-              v-show="searchText !== ''"
+              v-show="searchText !== '' && searchText !== null"
               @click.prevent="searchText = ''"
               >Cancel</b-button
             >
