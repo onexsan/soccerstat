@@ -31,6 +31,7 @@
                     width="20"
                     height="15"
                     class="card__img"
+                    alt="Team icon"
                   />
                   <p class="card__title">{{ item.name }}</p>
                 </router-link>

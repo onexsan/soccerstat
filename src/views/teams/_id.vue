@@ -14,13 +14,14 @@
         <h1 class="title">{{ team.name }}</h1>
 
         <section class="section">
-          <h3>About</h3>
+          <h2>About</h2>
           <b-card class="about-block about-block--team" v-if="team">
             <img
               class="about-block__img"
               :src="team.crestUrl"
               width="100"
               height="auto"
+              alt="Team icon"
             />
             <div class="about-block__content">
               <p class="about-block__row">
@@ -41,7 +42,7 @@
         </section>
 
         <section class="section">
-          <h3>Matches</h3>
+          <h2>Matches</h2>
           <FilterComponent @updError="updError" @updMatches="updMatches" />
           <MatchList :matches="matches" :team="team" :error="error" />
         </section>

@@ -14,7 +14,7 @@
         <h1 class="title" v-if="competition">{{ competition.name }}</h1>
 
         <section class="section">
-          <h3>About</h3>
+          <h2>About</h2>
           <b-card class="about-block" v-if="competition">
             <b-card-text>
               <p class="about-block__row">
@@ -31,13 +31,13 @@
 
         <template v-if="teams && teams.length > 0">
           <section class="section">
-            <h3>Teams</h3>
+            <h2>Teams</h2>
             <TeamsSlider :teams="teams" :competitionPage="true" />
           </section>
         </template>
 
         <section class="section">
-          <h3>Matches</h3>
+          <h2>Matches</h2>
           <FilterComponent @updError="updError" @updMatches="updMatches" />
           <MatchList :matches="matches" :error="error" />
         </section>

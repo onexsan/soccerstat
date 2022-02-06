@@ -3,7 +3,7 @@
     <div class="container header__container">
       <div class="header__logo">
         <div class="header__icon">
-          <img src="@/assets/images/icons/soccerball.svg" alt="" />
+          <img src="@/assets/images/icons/soccerball.svg" alt="Header icon" />
         </div>
         <router-link to="/" class="header__link">SoccerStat</router-link>
       </div>
@@ -15,7 +15,7 @@
           class="header-hamburger__btn"
           @click.prevent="toggleHamburger()"
         >
-          <img src="@/assets/images/icons/bars.svg" alt="" />
+          <img src="@/assets/images/icons/bars.svg" alt="Menu icon" />
         </button>
       </div>
     </div>

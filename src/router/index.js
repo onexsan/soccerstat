@@ -21,11 +21,7 @@ const routes = [
     meta: {
       title: "Soccerstat – Teams",
     },
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/teams/index.vue"),
+    component: () => import("../views/teams/index.vue"),
   },
   {
     path: "/competitions",
@@ -33,11 +29,7 @@ const routes = [
     meta: {
       title: "Soccerstat – Competitions",
     },
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/competitions/index.vue"),
+    component: () => import("../views/competitions/index.vue"),
   },
   {
     path: "/competitions/:id",
